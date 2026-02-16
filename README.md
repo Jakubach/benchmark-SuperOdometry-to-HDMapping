@@ -24,6 +24,7 @@ cd ~/hdmapping-benchmark
 git clone https://github.com/MapsHD/benchmark-SuperOdometry-to-HDMapping.git --recursive
 cd benchmark-SuperOdometry-to-HDMapping
 git checkout Bunker-DVI-Dataset-reg-1
+git submodule update --init --recursive
 docker build -t superodom_humble .
 ```
 
