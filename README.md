@@ -19,6 +19,7 @@ This repository contains ROS 2 workspace that :
 ## Dependecies
 ```shell
 sudo apt install libgoogle-glog-dev libtbb-dev
+pip install empy==3.3.4
 ```
 
 
@@ -30,7 +31,7 @@ mkdir -p ~/superodom_ws
 cd ~/superodom_ws
 git clone https://github.com/MapsHD/benchmark-SuperOdometry-to-HDMapping.git . --recursive
 git submodule update --init --recursive
-source /opt/ros/humble/setup.bash
+source /opt/ros/$ROS_DISTRO/setup.bash
 colcon build
 source install/setup.bash
 ```
