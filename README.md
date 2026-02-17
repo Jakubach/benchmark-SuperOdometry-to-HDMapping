@@ -1,19 +1,21 @@
 # SuperOdometry to HDMapping simplified instruction
 
 ## Step 1 (prepare data)
-Download the dataset `reg-1.bag` by clicking [link](https://cloud.cylab.be/public.php/dav/files/7PgyjbM2CBcakN5/reg-1.bag) (it is part of [Bunker DVI Dataset](https://charleshamesse.github.io/bunker-dvi-dataset)) and convert with [tool](https://github.com/MapsHD/mandeye_to_bag). Data conversion is performed using the mandeye_to_bag tool, with the workflow:
-ros1-to-hdmapping → hdmapping-to-ros1(name it reg-1-convert.bag) → rosbags-convert (ros1 to ros2)
+Download the dataset `reg-1.bag` by clicking [link](https://cloud.cylab.be/public.php/dav/files/7PgyjbM2CBcakN5/reg-1.bag) (it is part of [Bunker DVI Dataset](https://charleshamesse.github.io/bunker-dvi-dataset)) and convert with [tool](https://github.com/MapsHD/mandeye_to_bag). Data conversion workflow has 3 steps:
+1. ros1-to-hdmapping
+2. hdmapping-to-ros1 (creating `reg-1-convert.bag`)
+3. rosbags-convert (ros1 to ros2 - done in Step 3)
 
- Click [here](https://github.com/MapsHD/mandeye_to_bag) for tool and use these commands:
+Step 1 performs the first two conversions using mandeye_to_bag:
+
  ```shell
 cd ~/hdmapping-benchmark/mandeye_to_bag
 ./mandeye-convert.sh ~/hdmapping-benchmark/data/reg-1.bag ~/hdmapping-benchmark/data/reg-1-convert ros1-to-hdmapping
 ./mandeye-convert.sh ~/hdmapping-benchmark/data/reg-1-convert ~/hdmapping-benchmark/data/reg-1-convert.bag hdmapping-to-ros1
 ```
 
-
-Folder 'reg-1-ros2-lidar' is an input for further calculations.
-It should be located in '~/hdmapping-benchmark/data'.
+The final conversion (rosbags-convert) happens in **Step 3**, which creates `reg-1-ros2-lidar` folder.
+This folder will be your input for **Step 4**.
 
 ## Step 2 (prepare docker)
 Run following commands in terminal
@@ -34,13 +36,12 @@ We now convert data from ROS1 to ROS2
 ```shell
 docker run -it -v ~/hdmapping-benchmark/data:/data --user 1000:1000 superodom_humble /bin/bash
 cd /data
-rosbags-convert --src reg-1-convert.bag/reg-1-convert --dst reg-1-ros2-lidar
+rosbags-convert --src reg-1-convert.bag --dst reg-1-ros2-lidar
+exit
 ```
 
-close terminal
-
 ## Step 4 (run docker, file 'reg-1-ros2-lidar' should be in '~/hdmapping-benchmark/data')
-open new terminal
+You are now back on the HOST (after `exit` in Step 3)
 
 ```shell
 cd ~/hdmapping-benchmark/benchmark-SuperOdometry-to-HDMapping
