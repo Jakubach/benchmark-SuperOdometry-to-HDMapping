@@ -59,7 +59,7 @@ ros2 bag play /path/to/your/bag.mcap --clock
 Terminal 3:
 ```bash
 source install/setup.bash
-ros2 bag record /lio/odom /lio/cloud_world -o my_recording
+ros2 bag record /registered_scan /state_estimation -o my_recording --storage sqlite3
 ```
 
 ### Step 4: Convert to HDMapping format
