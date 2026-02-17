@@ -16,12 +16,10 @@ This repository contains ROS 2 workspace that :
   - submodule to tested revision of superOdom
   - a converter that listens to topics advertised from odometry node and save data in format compatible with HDMapping.
 
-## Dependecies
+## Dependencies
 ```shell
 sudo apt install libgoogle-glog-dev libtbb-dev
-pip install empy==3.3.4
 ```
-
 
 ## Building
 
@@ -58,29 +56,9 @@ source install/setup.bash
 ros2 bag record /registered_scan /state_estimation -o my_recording --storage sqlite3
 ```
 
-## Usage - conversion:
-
-```shell
-source install/setup.bash
-ros2 run superOdom-to-hdmapping listener my_recording output_hdmapping
-```
-
-## Record the bag file:
-
-```shell
-ros2 bag record /registered_scan /state_estimation -o my_recording --storage sqlite3
-```
-
-## SuperOdom Launch:
-
-```shell
-source install/setup.bash
-ros2 launch super_odometry livox_mid360.launch.py
-```
-
 ## During the record (if you want to stop recording earlier) / after finishing the bag:
 
-```shell
+```
 In the terminal where the ros record is, interrupt the recording by CTRL+C
 Do it also in ros launch terminal by CTRL+C.
 ```
