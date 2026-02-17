@@ -31,6 +31,7 @@ mkdir -p ~/superodom_ws
 cd ~/superodom_ws
 git clone https://github.com/MapsHD/benchmark-SuperOdometry-to-HDMapping.git . --recursive
 git submodule update --init --recursive
+sed -i 's|livox_ros_driver2|livox_ros_driver|g' src/SuperOdom/super_odometry/CMakeLists.txt src/SuperOdom/super_odometry/package.xml src/SuperOdom/super_odometry/src/FeatureExtraction/featureExtraction.cpp src/SuperOdom/super_odometry/include/super_odometry/FeatureExtraction/featureExtraction.h
 source /opt/ros/$ROS_DISTRO/setup.bash
 colcon build
 source install/setup.bash
