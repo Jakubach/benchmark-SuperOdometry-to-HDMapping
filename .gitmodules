@@ -4,6 +4,3 @@
 [submodule "src/superOdom-to-hdmapping/src/3rdparty/LASzip"]
 	path = src/superOdom-to-hdmapping/src/3rdparty/LASzip
 	url = https://github.com/LASzip/LASzip.git
-[submodule "src/livox_ros_driver2"]
-	path = src/livox_ros_driver2
-	url = https://github.com/Livox-SDK/livox_ros_driver2.git
