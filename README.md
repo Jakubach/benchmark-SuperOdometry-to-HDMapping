@@ -28,7 +28,8 @@ Clone the repo
 ```shell
 mkdir -p ~/superodom_ws/src
 cd ~/superodom_ws/src
-git clone https://github.com/MapsHD/benchmark-SuperOdometry-to-HDMapping.git . --recursive
+git clone https://github.com/MapsHD/benchmark-SuperOdometry-to-HDMapping.git .
+git submodule update --init --recursive
 cd ~/superodom_ws
 colcon build
 source install/setup.bash
