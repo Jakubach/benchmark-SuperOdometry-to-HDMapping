@@ -30,6 +30,7 @@ mkdir -p ~/superodom_ws
 cd ~/superodom_ws
 git clone https://github.com/MapsHD/benchmark-SuperOdometry-to-HDMapping.git . --recursive
 git submodule update --init --recursive
+source /opt/ros/humble/setup.bash
 colcon build
 source install/setup.bash
 ```
