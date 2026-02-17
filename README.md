@@ -1,89 +1,91 @@
-# [SuperOdom](https://github.com/superxslam/SuperOdom) ROS 2 to [HDMapping](https://github.com/MapsHD/HDMapping)
+# [SuperOdom](https://github.com/superxslam/SuperOdom) converter to [HDMapping](https://github.com/MapsHD/HDMapping)
 
-## Quick Start
+## Hint
 
-For automated ROS 2 workflow with Bunker DVI Dataset, use branch [Bunker-DVI-Dataset-reg-1](https://github.com/MapsHD/benchmark-SuperOdom-to-HDMapping/tree/Bunker-DVI-Dataset-reg-1)
+Please change branch to [Bunker-DVI-Dataset-reg-1](https://github.com/MapsHD/benchmark-SuperOdometry-to-HDMapping/tree/Bunker-DVI-Dataset-reg-1) for quick experiment.
 
-## Overview
 
-This repository integrates [SuperOdom](https://github.com/superxslam/SuperOdom) (ROS 2 LiDAR-Inertial Odometry) with [HDMapping](https://github.com/MapsHD/HDMapping).
+## Example Dataset:
 
-**Components:**
-- SuperOdom: ROS 2 Humble LiDAR-Inertial odometry (SLAM)
-- superOdom-to-hdmapping: Listener that converts odometry topics to HDMapping format
+Download the dataset from [Bunker DVI Dataset](https://charleshamesse.github.io/bunker-dvi-dataset/)
 
-## Requirements
+## Intended use
 
-- ROS 2 Humble
-- Docker (for containerized build)
-- Colcon build tools
-- Data: Livox bag format (use Bunker-DVI-Dataset-reg-1 branch for automated setup)
+This small toolset allows to integrate SLAM solution provided by [SuperOdom](https://github.com/superxslam/SuperOdom) with [HDMapping](https://github.com/MapsHD/HDMapping).
+This repository contains ROS 2 workspace that :
+  - submodule to tested revision of superOdom
+  - a converter that listens to topics advertised from odometry node and save data in format compatible with HDMapping.
 
-## Building with Docker
-
-```bash
-docker build -t superodom_humble .
+## Dependecies
+```shell
+sudo apt install libgoogle-glog-dev libtbb-dev
 ```
 
-## Building Native ROS 2 Workspace
 
-```bash
+## Building
+
+Clone the repo
+```shell
 mkdir -p ~/superodom_ws/src
 cd ~/superodom_ws/src
-git clone https://github.com/MapsHD/benchmark-SuperOdom-to-HDMapping.git --recursive
+git clone https://github.com/MapsHD/benchmark-SuperOdometry-to-HDMapping.git --recursive
 cd ~/superodom_ws
 colcon build
 source install/setup.bash
 ```
 
-## Running SuperOdom with ROS Bags
+## Usage - data SLAM:
 
-### Step 1: Launch SuperOdom
+Prepare recorded bag with estimated odometry:
 
-Terminal 1:
-```bash
+In first terminal launch odometry:
+```shell
 source install/setup.bash
 ros2 launch super_odometry livox_mid360.launch.py
 ```
 
-### Step 2: Play recorded bag
-
-Terminal 2:
-```bash
+In second terminal play bag:
+```shell
 source install/setup.bash
 ros2 bag play /path/to/your/bag.mcap --clock
 ```
 
-### Step 3: Record odometry output (run in parallel with Steps 1-2)
-
-Terminal 3:
-```bash
+In third terminal record bag:
+```shell
 source install/setup.bash
 ros2 bag record /registered_scan /state_estimation -o my_recording --storage sqlite3
 ```
 
-### Step 4: Convert to HDMapping format
+## Usage - conversion:
 
-After recording completes, run:
-```bash
+```shell
 source install/setup.bash
 ros2 run superOdom-to-hdmapping listener my_recording output_hdmapping
 ```
 
-## Output Files
+## Record the bag file:
 
-The converter generates:
-- `output_hdmapping/session.json`
-- `output_hdmapping/poses.reg`
-- `output_hdmapping/scan_lio_*.laz`
-- `output_hdmapping/trajectory_lio_*.csv`
+```shell
+ros2 bag record /registered_scan /state_estimation -o my_recording --storage sqlite3
+```
 
-Open in HDMapping using `multi_view_tls_registration_step_2` tool.
+## SuperOdom Launch:
 
-## Supported Sensors
+```shell
+source install/setup.bash
+ros2 launch super_odometry livox_mid360.launch.py
+```
 
-- Livox Mid360 (configured by default in launch files)
-- Velodyne VLP-16
-- Ouster OS1-128
+## During the record (if you want to stop recording earlier) / after finishing the bag:
 
-See `src/SuperOdom/super_odometry/launch/` for other sensor configurations.
+```shell
+In the terminal where the ros record is, interrupt the recording by CTRL+C
+Do it also in ros launch terminal by CTRL+C.
+```
+
+## Usage - Conversion (ROS bag to HDMapping, after recording stops):
+
+```shell
+source install/setup.bash
+ros2 run superOdom-to-hdmapping listener my_recording output_hdmapping
+```
