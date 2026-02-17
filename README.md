@@ -1,100 +1,89 @@
-# [SuperOdom](https://github.com/superxslam/SuperOdom) converter to [HDMapping](https://github.com/MapsHD/HDMapping)
+# [SuperOdom](https://github.com/superxslam/SuperOdom) ROS 2 to [HDMapping](https://github.com/MapsHD/HDMapping)
 
-## Hint
+## Quick Start
 
-Please change branch to [Bunker-DVI-Dataset-reg-1](https://github.com/MapsHD/benchmark-SuperOdom-to-HDMapping/tree/Bunker-DVI-Dataset-reg-1) for quick experiment.
+For automated ROS 2 workflow with Bunker DVI Dataset, use branch [Bunker-DVI-Dataset-reg-1](https://github.com/MapsHD/benchmark-SuperOdom-to-HDMapping/tree/Bunker-DVI-Dataset-reg-1)
 
+## Overview
 
-## Example Dataset: 
+This repository integrates [SuperOdom](https://github.com/superxslam/SuperOdom) (ROS 2 LiDAR-Inertial Odometry) with [HDMapping](https://github.com/MapsHD/HDMapping).
 
-Download the dataset from [Bunker DVI Dataset](https://charleshamesse.github.io/bunker-dvi-dataset/)  
+**Components:**
+- SuperOdom: ROS 2 Humble LiDAR-Inertial odometry (SLAM)
+- superOdom-to-hdmapping: Listener that converts odometry topics to HDMapping format
 
-## Intended use 
+## Requirements
 
-This small toolset allows to integrate SLAM solution provided by [superOdom](https://github.com/superxslam/SuperOdom) with [HDMapping](https://github.com/MapsHD/HDMapping).
-This repository contains ROS 1 workspace that :
-  - submodule to tested revision of superOdom
-  - a converter that listens to topics advertised from odometry node and save data in format compatible with HDMapping.
+- ROS 2 Humble
+- Docker (for containerized build)
+- Colcon build tools
+- Data: Livox bag format (use Bunker-DVI-Dataset-reg-1 branch for automated setup)
 
-## Dependecies
-```shell
-sudo apt install libgoogle-glog-dev libtbb-dev
+## Building with Docker
+
+```bash
+docker build -t superodom_humble .
 ```
 
+## Building Native ROS 2 Workspace
 
-## livox_ros_driver
-
-```shell
-git clone https://github.com/Livox-SDK/livox_ros_driver.git ws_livox/src
-cd ws_livox
-catkin_make
-
-Use the following command to update the current ROS package environment :
-
-source ./devel/setup.sh
-```
-## Building
-
-Clone the repo
-```shell
-mkdir -p /test_ws/src
-cd /test_ws/src
-git clone https://github.com/marcinmatecki/SuperOdom-to-HDMapping.git --recursive
-cd ..
-catkin_make
+```bash
+mkdir -p ~/superodom_ws/src
+cd ~/superodom_ws/src
+git clone https://github.com/MapsHD/benchmark-SuperOdom-to-HDMapping.git --recursive
+cd ~/superodom_ws
+colcon build
+source install/setup.bash
 ```
 
-## Usage - data SLAM:
+## Running SuperOdom with ROS Bags
 
-Prepare recorded bag with estimated odometry:
+### Step 1: Launch SuperOdom
 
-In first terminal record bag:
-```shell
-rosbag record /lio/odom /lio/cloud_world
+Terminal 1:
+```bash
+source install/setup.bash
+ros2 launch super_odometry livox_mid360.launch.py
 ```
 
-and start odometry:
-```shell 
-cd /test_ws/
-source ./devel/setup.sh # adjust to used shell
-roslaunch super_lio Livox_mid360.launch
-rosbag play your bag file
+### Step 2: Play recorded bag
+
+Terminal 2:
+```bash
+source install/setup.bash
+ros2 bag play /path/to/your/bag.mcap --clock
 ```
 
-## Usage - conversion:
+### Step 3: Record odometry output (run in parallel with Steps 1-2)
 
-```shell
-cd /test_ws/
-source ./devel/setup.sh # adjust to used shell
-rosrun superOdom-to-hdmapping listener <recorded_bag> <output_dir>
+Terminal 3:
+```bash
+source install/setup.bash
+ros2 bag record /lio/odom /lio/cloud_world -o my_recording
 ```
 
-## Record the bag file:
+### Step 4: Convert to HDMapping format
 
-```shell
-rosbag record /lio/odom /lio/cloud_world
+After recording completes, run:
+```bash
+source install/setup.bash
+ros2 run superOdom-to-hdmapping listener my_recording output_hdmapping
 ```
 
-## Super LIO Launch:
+## Output Files
 
-```shell
-cd /test_ws/
-source ./devel/setup.sh # adjust to used shell
-roslaunch super_lio Livox_mid360.launch
-rosbag play your bag file
-```
+The converter generates:
+- `output_hdmapping/session.json`
+- `output_hdmapping/poses.reg`
+- `output_hdmapping/scan_lio_*.laz`
+- `output_hdmapping/trajectory_lio_*.csv`
 
-## During the record (if you want to stop recording earlier) / after finishing the bag:
+Open in HDMapping using `multi_view_tls_registration_step_2` tool.
 
-```shell
-In the terminal where the ros record is, interrupt the recording by CTRL+C
-Do it also in ros launch terminal by CTRL+C.
-```
+## Supported Sensors
 
-## Usage - Conversion (ROS bag to HDMapping, after recording stops):
+- Livox Mid360 (configured by default in launch files)
+- Velodyne VLP-16
+- Ouster OS1-128
 
-```shell
-cd /test_ws/
-source ./devel/setup.sh # adjust to used shell
-rosrun superOdom-to-hdmapping listener <recorded_bag> <output_dir>
-```
+See `src/SuperOdom/super_odometry/launch/` for other sensor configurations.
