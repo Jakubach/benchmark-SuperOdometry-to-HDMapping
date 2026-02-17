@@ -71,14 +71,6 @@ RUN git clone --branch 3.4.3 --depth 1 https://github.com/LASzip/LASzip.git /tmp
 
 RUN ldconfig
 
-# Replace livox_ros_driver2 -> livox_ros_driver (bag has v1 CustomMsg type)
-RUN sed -i \
-  -e 's|livox_ros_driver2|livox_ros_driver|g' \
-  src/SuperOdom/super_odometry/CMakeLists.txt \
-  src/SuperOdom/super_odometry/package.xml \
-  src/SuperOdom/super_odometry/src/FeatureExtraction/featureExtraction.cpp \
-  src/SuperOdom/super_odometry/include/super_odometry/FeatureExtraction/featureExtraction.h
-
 # Configure topics for Livox MID360 bag
 RUN sed -i \
   -e 's|imu_topic: "/imu/data"|imu_topic: "/livox/imu"|' \

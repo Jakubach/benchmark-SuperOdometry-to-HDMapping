@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(livox_ros_driver)
+project(livox_ros_driver2)
 
 find_package(ament_cmake REQUIRED)
 find_package(std_msgs REQUIRED)
