@@ -1,3 +1,6 @@
 [submodule "src/SuperOdom"]
 	path = src/SuperOdom
 	url = https://github.com/superxslam/SuperOdom
+[submodule "src/superOdom-to-hdmapping/src/3rdparty/LASzip"]
+	path = src/superOdom-to-hdmapping/src/3rdparty/LASzip
+	url = https://github.com/LASzip/LASzip.git

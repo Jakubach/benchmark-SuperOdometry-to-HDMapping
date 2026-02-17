@@ -26,11 +26,11 @@ sudo apt install libgoogle-glog-dev libtbb-dev
 
 Clone the repo
 ```shell
-mkdir -p ~/superodom_ws/src
-cd ~/superodom_ws/src
-git clone https://github.com/MapsHD/benchmark-SuperOdometry-to-HDMapping.git .
-git submodule update --init --recursive
+mkdir -p ~/superodom_ws
 cd ~/superodom_ws
+git clone https://github.com/MapsHD/benchmark-SuperOdometry-to-HDMapping.git superOdom_repo --recursive
+mv superOdom_repo/src/* src/ 2>/dev/null || true
+rm -rf superOdom_repo
 colcon build
 source install/setup.bash
 ```
