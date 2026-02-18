@@ -40,30 +40,6 @@ rosbags-convert --src reg-1-convert.bag --dst reg-1-ros2-lidar
 exit
 ```
 
-The conversion produces a bag with message type `livox_ros_driver/msg/CustomMsg`,
-but SuperOdometry expects `livox_ros_driver2/msg/CustomMsg`. Fix the type name:
-
-```shell
-python3 -c "
-import sqlite3, pathlib
-
-bag_dir = pathlib.Path('$HOME/hdmapping-benchmark/data/reg-1-ros2-lidar')
-
-# Fix SQLite database
-for db in bag_dir.glob('*.db3'):
-    conn = sqlite3.connect(str(db))
-    conn.execute(\"UPDATE topics SET type='livox_ros_driver2/msg/CustomMsg' WHERE type='livox_ros_driver/msg/CustomMsg'\")
-    conn.commit()
-    conn.close()
-
-# Fix metadata.yaml
-meta = bag_dir / 'metadata.yaml'
-meta.write_text(meta.read_text().replace('livox_ros_driver/msg/CustomMsg', 'livox_ros_driver2/msg/CustomMsg'))
-
-print('Type fixed: livox_ros_driver -> livox_ros_driver2')
-"
-```
-
 ## Step 4 (run docker, file 'reg-1-ros2-lidar' should be in '~/hdmapping-benchmark/data')
 You are now back on the HOST (after `exit` in Step 3)
 
