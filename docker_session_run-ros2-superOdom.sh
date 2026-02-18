@@ -102,7 +102,15 @@ ros2 bag play '"$DATASET_CONTAINER_PATH"' --clock; tmux wait-for -S BAG_DONE;
 echo "[play] done"
 '\'' C-m
 
-    # ---------- PANEL 4: controller ----------
+    # ---------- WINDOW 2: rviz2 ----------
+    tmux new-window -t '"$TMUX_SESSION"' -n rviz '\''
+source /opt/ros/humble/setup.bash
+source /ros2_ws/install/setup.bash
+sleep 8
+rviz2 -d /ros2_ws/src/SuperOdom/super_odometry/ros2.rviz
+'\''
+
+    # ---------- WINDOW 3: controller ----------
     tmux new-window -t '"$TMUX_SESSION"' -n control '\''
 source /opt/ros/humble/setup.bash
 source /ros2_ws/install/setup.bash
